@@ -14,7 +14,7 @@
 #   given gcloud command.
 #
 function gcloud {
-    docker run --rm -it -v $HOME/.config/gcloud:/root/.config/gcloud -w /root \
+    docker run --rm -it -v $temp_directory:/data -v $HOME/.config/gcloud:/root/.config/gcloud -w /root \
         gcr.io/google.com/cloudsdktool/cloud-sdk:slim gcloud "$@"
 }
 

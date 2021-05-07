@@ -12,6 +12,9 @@ set -eu${DEBUG:+x}o pipefail
 
 base_directory="$(cd -- "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null ; pwd -P)"
 
+temp_directory=$(mktemp -d './tmpXXXXXX')
+trap "rm -rf $temp_directory" EXIT
+
 source "$base_directory/functions.sh"
 
 # Authenticate the operator
@@ -51,14 +54,14 @@ gcloud beta billing projects link cloudshock-dev-$suffix --billing-account="bill
 gcloud projects list --filter "cloudshock-"
 
 # Create a single Service Account in the restricted project
-gcloud iam service-accounts create gcp-project --description "Service Account used by gcp-project to manage resources" --project cloudshock-$suffix > /dev/null
+gcloud iam service-accounts create tc-bootstrap --description "Service Account used by Terraform Cloud to run bootstrap project" --project cloudshock-$suffix > /dev/null
 
 # Give the single Service Account the Owner role in both projects
-gcloud projects add-iam-policy-binding cloudshock-$suffix --member=serviceAccount:gcp-project@cloudshock-$suffix.iam.gserviceaccount.com --role=roles/owner > /dev/null
-gcloud projects add-iam-policy-binding cloudshock-dev-$suffix --member=serviceAccount:gcp-project@cloudshock-$suffix.iam.gserviceaccount.com --role=roles/owner > /dev/null
+gcloud projects add-iam-policy-binding cloudshock-$suffix --member=serviceAccount:tc-bootstrap@cloudshock-$suffix.iam.gserviceaccount.com --role=roles/owner > /dev/null
+gcloud projects add-iam-policy-binding cloudshock-dev-$suffix --member=serviceAccount:tc-bootstrap@cloudshock-$suffix.iam.gserviceaccount.com --role=roles/owner > /dev/null
 
 # Create a Key for the Service Account
-gcloud iam service-accounts keys create .config/gcloud/gcp-project-credentials.json --iam-account=gcp-project@cloudshock-$suffix.iam.gserviceaccount.com > /dev/null
+gcloud iam service-accounts keys create /data/gcp-credentials.json --iam-account=tc-bootstrap@cloudshock-$suffix.iam.gserviceaccount.com > /dev/null
 
 terraform login
 
@@ -102,17 +105,17 @@ curl -sfL \
     -d '{"data":{"type":"vars","attributes":{"key":"TFE_TOKEN","value":"'$organization_token'","description":"Terraform Cloud Organization API Token used to configure Workspaces","category":"env","sensitive":true}}}' \
     https://app.terraform.io/api/v2/workspaces/$workspace_id/vars > /dev/null
 
-# CReate the google_credentials Terraform Cloud Workspace Variable
+# Create the GOOGLE_CREDENTIALS Terraform Cloud Workspace Variable
 curl -sfL \
     -H "Authorization: Bearer $(jq -r '.credentials."app.terraform.io".token' ~/.terraform.d/credentials.tfrc.json)" \
     -H "Content-Type: application/vnd.api+json" \
     -X POST \
-    -d '{"data":{"type":"vars","attributes":{"key":"google_credentials","value":"'$(cat "$HOME/.config/gcloud/gcp-project-credentials.json" | tr -d '\n' | base64)'","description":"Base64 encoded GCP Service Account used to manage GCP resources","category":"terraform","sensitive":true}}}' \
+    -d '{"data":{"type":"vars","attributes":{"key":"GOOGLE_CREDENTIALS","value":"'$(cat "$temp_directory/gcp-credentials.json" | tr -d '\n')'","description":"GCP Service Account used to manage GCP resources","category":"env","sensitive":true}}}' \
     https://app.terraform.io/api/v2/workspaces/$workspace_id/vars > /dev/null
 
 # Remove the Service Account Key from the local filesystem now that it has been
 # used to create the Terraform Cloud Workspace Variable.
-rm -f "$HOME/.config/gcloud/gcp-project-credentials.json" > /dev/null || true
+rm -f "$temp_directory/gcp-credentials.json" > /dev/null || true
 
 # Import the bootstrap Terraform Cloud Workspace resource into the Terraform
 # State to avoid Terraform trying to create a second Workspace with the same

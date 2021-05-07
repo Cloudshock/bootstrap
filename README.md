@@ -38,7 +38,7 @@ GCP Projects are identified in two ways:
 
 By convention, project names will use all uppercase letters and hyphens, and project IDs will be the same as the name but using only lowercase letters and followed by a hyphen and a six digit sequence.  Since APIs and tools refer to GCP Projects by their ID not their name, the name is never used elsewhere (e.g. as part of the name of other resources).  Whenever a reference back to the GCP Project is needed, the Project ID is used.
 
-Currently, the projects have been created with the following attributes, however if reconstructing them in a disaster recovery scenario, it is possible that these project ID values are no longer available, in which case, a different six digit sequence should be used and the corresponding variable named **gcp_projects** in the **terraform/gcp.tf** file and this README should be updated.
+Currently, the projects have been created with the following attributes, however if reconstructing them in a disaster recovery scenario, it is possible that these project ID values are no longer available, in which case, a different six digit sequence should be used and the corresponding variable named **gcp_project_suffix** in the **terraform/gcp.tf** file and this README should be updated.
 
 | Project Name   | Project ID            | Purpose            |
 | -------------- | --------------------- | ------------------ |

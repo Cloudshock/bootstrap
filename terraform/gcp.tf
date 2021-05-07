@@ -13,10 +13,22 @@
 provider "google" {
 }
 
-variable "gcp_projects" {
-  description = "The list of GCP Projects (Project ID) to configure."
-  type        = set(string)
-  default     = ["cloudshock-dev-344990", "cloudshock-344990",]
+variable "gcp_project_suffix" {
+  description = "The common suffix used for all GCP Project IDs."
+  type        = string
+  default     = "344990"
 }
 
-#resource "google_project_service" "cloudshock" {}
+locals {
+  gcp_project_ids = [
+    "cloudshock-${var.gcp_project_suffix}",
+    "cloudshock-dev-${var.gcp_project_suffix}",
+  ]
+  gcp_services = [
+    "compute.googleapis.com",
+  ]
+}
+
+#resource "google_project_service" "cloudshock" {
+#
+#}

@@ -101,3 +101,4 @@ variable "terraform_cloud_oauth_token_id" {
 
 ## Regular Configuration
 
+When commits are pushed to the *main* branch, Terraform Cloud will automatically trigger a Terraform run.  However, an authorized operator will need to approve the plan prior to it being applied.

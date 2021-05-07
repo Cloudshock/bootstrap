@@ -43,3 +43,37 @@ resource "google_project_service" "cloudshock_dev" {
   service = each.value
 }
 
+data "google_service_account" "tc_bootstrap" {
+  account_id = "tc-bootstrap"
+  project    = "cloudshock-${var.gcp_project_suffix}"
+}
+
+resource "google_project_iam_custom_role" "bootstrap" {
+  for_each = toset(local.gcp_project_ids)
+
+  role_id     = "terraformCloudBootstrap"
+  title       = "Terraform Cloud Bootstrap"
+  stage       = "GA"
+  description = "Custom Role used by Terraform Cloud for the bootstrap Workspace"
+
+  permissions = [
+    "iam.roles.create",
+    "iam.roles.delete",
+    "iam.roles.get",
+    "iam.roles.list",
+    "iam.roles.update",
+    "resourcemanager.projects.getIamPolicy",
+    "resourcemanager.projects.setIamPolicy",
+  ]
+}
+
+resource "google_project_iam_binding" "tc_bootstrap" {
+  for_each = toset(local.gcp_project_ids)
+
+  project = each.value
+  role    = google_project_iam_custom_role.bootstrap.name
+
+  members = [
+    "serviceAccount:${google_service_account.tc_bootstrap.email}",
+  ]
+}

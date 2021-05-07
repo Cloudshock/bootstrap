@@ -16,4 +16,4 @@ source "$base_directory/functions.sh"
 cd "$base_directory/../terraform"
 terraform init
 
-terraform plan
+terraform apply

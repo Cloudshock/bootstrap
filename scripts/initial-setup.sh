@@ -107,7 +107,7 @@ curl -sfL \
     -H "Authorization: Bearer $(jq -r '.credentials."app.terraform.io".token' ~/.terraform.d/credentials.tfrc.json)" \
     -H "Content-Type: application/vnd.api+json" \
     -X POST \
-    -d '{"data":{"type":"vars","attributes":{"key":"GOOGLE_CREDENTIALS","value":"'$(cat "$HOME/.config/gcloud/gcp-project-credentials.json" | tr -d '\n' | base64)'","description":"Base64 encoded GCP Service Account used to manage GCP resources","category":"env","sensitive":true}}}' \
+    -d '{"data":{"type":"vars","attributes":{"key":"GOOGLE_CREDENTIALS","value":"'$(cat "$HOME/.config/gcloud/gcp-project-credentials.json" | tr -d '\n')'","description":"GCP Service Account used to manage GCP resources","category":"env","sensitive":true}}}' \
     https://app.terraform.io/api/v2/workspaces/$workspace_id/vars > /dev/null
 
 # Remove the Service Account Key from the local filesystem now that it has been

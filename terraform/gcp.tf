@@ -29,6 +29,18 @@ locals {
   ]
 }
 
-#resource "google_project_service" "cloudshock" {
-#
-#}
+resource "google_project_service" "cloudshock" {
+  for_each = toset(local.gcp_services)
+
+  project = "cloudshock-${var.gcp_project_suffix}"
+  service = each.value
+}
+
+resource "google_project_service" "cloudshock_dev" {
+  for_each = toset(local.gcp_services)
+
+  project = "cloudshock-dev-${var.gcp_project_suffix}"
+  service = each.value
+}
+
+

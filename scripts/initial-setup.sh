@@ -12,6 +12,9 @@ set -eu${DEBUG:+x}o pipefail
 
 base_directory="$(cd -- "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null ; pwd -P)"
 
+temp_directory=$(mktemp -d './tmpXXXXXX')
+trap "rm -rf $temp_directory" EXIT
+
 source "$base_directory/functions.sh"
 
 # Authenticate the operator
@@ -58,7 +61,7 @@ gcloud projects add-iam-policy-binding cloudshock-$suffix --member=serviceAccoun
 gcloud projects add-iam-policy-binding cloudshock-dev-$suffix --member=serviceAccount:tc-bootstrap@cloudshock-$suffix.iam.gserviceaccount.com --role=roles/owner > /dev/null
 
 # Create a Key for the Service Account
-gcloud iam service-accounts keys create ./gcp-credentials.json --iam-account=tc-bootstrap@cloudshock-$suffix.iam.gserviceaccount.com > /dev/null
+gcloud iam service-accounts keys create /data/gcp-credentials.json --iam-account=tc-bootstrap@cloudshock-$suffix.iam.gserviceaccount.com > /dev/null
 
 terraform login
 
@@ -107,12 +110,12 @@ curl -sfL \
     -H "Authorization: Bearer $(jq -r '.credentials."app.terraform.io".token' ~/.terraform.d/credentials.tfrc.json)" \
     -H "Content-Type: application/vnd.api+json" \
     -X POST \
-    -d '{"data":{"type":"vars","attributes":{"key":"GOOGLE_CREDENTIALS","value":"'$(cat "./gcp-credentials.json" | tr -d '\n')'","description":"GCP Service Account used to manage GCP resources","category":"env","sensitive":true}}}' \
+    -d '{"data":{"type":"vars","attributes":{"key":"GOOGLE_CREDENTIALS","value":"'$(cat "$temp_directory/gcp-credentials.json" | tr -d '\n')'","description":"GCP Service Account used to manage GCP resources","category":"env","sensitive":true}}}' \
     https://app.terraform.io/api/v2/workspaces/$workspace_id/vars > /dev/null
 
 # Remove the Service Account Key from the local filesystem now that it has been
 # used to create the Terraform Cloud Workspace Variable.
-rm -f "./gcp-credentials.json" > /dev/null || true
+rm -f "$temp_directory/gcp-credentials.json" > /dev/null || true
 
 # Import the bootstrap Terraform Cloud Workspace resource into the Terraform
 # State to avoid Terraform trying to create a second Workspace with the same

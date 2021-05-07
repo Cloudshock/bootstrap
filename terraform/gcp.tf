@@ -43,4 +43,3 @@ resource "google_project_service" "cloudshock_dev" {
   service = each.value
 }
 
-

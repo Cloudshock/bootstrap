@@ -38,12 +38,12 @@ GCP Projects are identified in two ways:
 
 By convention, project names will use all uppercase letters and hyphens, and project IDs will be the same as the name but using only lowercase letters and followed by a hyphen and a six digit sequence.  Since APIs and tools refer to GCP Projects by their ID not their name, the name is never used elsewhere (e.g. as part of the name of other resources).  Whenever a reference back to the GCP Project is needed, the Project ID is used.
 
-Currently, the projects have been created with the following attributes, however if reconstructing them in a disaster recovery scenario, it is possible that these project ID values are no longer available, in which case, a different six digit sequence should be used and the corresponding variable named **gcp_project_suffix** in the **terraform/gcp.tf** file and this README should be updated.
+Currently, the projects have been created with the following attributes, however if reconstructing them in a disaster recovery scenario, it is possible that these project ID values are no longer available, in which case, a different six digit sequence should be used and the corresponding variable named **gcp_project_suffix** in the **terraform/variables.tf** file and the table below should be updated.
 
 | Project Name   | Project ID            | Purpose            |
 | -------------- | --------------------- | ------------------ |
-| CLOUDSHOCK     | cloudshock-344990     | restricted project |
-| CLOUDSHOCK-DEV | cloudshock-dev-344990 | developer project  |
+| CLOUDSHOCK     | cloudshock-900334     | restricted project |
+| CLOUDSHOCK-DEV | cloudshock-dev-900334 | developer project  |
 
 #### GCP Service Account
 
@@ -54,12 +54,6 @@ The Service Account is the entity that Terraform runs authenticate as to update 
 Terraform Cloud is a system that can be used to executes Terraform runs in the cloud or locally, but handles the storage of the resulting Terraform State files in either case.
 
 This repository actually contains Terraform configuration to create all of the necessary Terraform Cloud Workspaces, however a few resources need to be created ahead time to allow the Terraform run that configures the rest.
-
-The **terraform-cloud.sh** script in the **scripts** directory completes the Terraform Cloud related initial setup.  The script requires some interaction with the operator at the beginning.  It is important that the **gcp-projects.sh** script, described in the previous section, gets executed before the **terraform-cloud.sh** script, since there is a dependency between the two scripts.  At the beginning of the script some interactions with the operator will occur.  The operator will be asked to accept that the Terraform Cloud User API Token will be stored unencrypted on the local filesystem.  Next, the operator will be asked for a description for the User API Token being created.  **The operator should replace the suggested description with `cloudshock` and then click the Create API token button.**.  The remaining setup is done without any further interaction.
-
-```sh
-scripts/terraform-cloud.sh
-```
 
 #### Terraform Cloud Organization
 

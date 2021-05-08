@@ -12,7 +12,7 @@ set -eu${DEBUG:+x}o pipefail
 
 base_directory="$(cd -- "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null ; pwd -P)"
 
-temp_directory=$(mktemp -d './tmpXXXXXX')
+temp_directory=$(mktemp -d "$base_directory/tmpXXXXXX")
 trap "rm -rf $temp_directory" EXIT
 
 source "$base_directory/functions.sh"

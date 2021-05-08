@@ -56,6 +56,7 @@ resource "google_project_iam_custom_role" "bootstrap" {
   role_id     = "terraformCloudBootstrap"
   title       = "Terraform Cloud Bootstrap"
   stage       = "GA"
+  project     = each.value
   description = "Custom Role used by Terraform Cloud for the bootstrap Workspace"
 
   permissions = [

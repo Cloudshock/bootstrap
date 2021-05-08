@@ -13,12 +13,6 @@
 provider "google" {
 }
 
-variable "gcp_project_suffix" {
-  description = "The common suffix used for all GCP Project IDs."
-  type        = string
-  default     = "344990"
-}
-
 locals {
   gcp_project_ids = [
     "cloudshock-${var.gcp_project_suffix}",

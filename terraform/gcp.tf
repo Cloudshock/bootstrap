@@ -27,6 +27,7 @@ locals {
   gcp_services = [
     "compute.googleapis.com",
     "iam.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
   ]
 }
 

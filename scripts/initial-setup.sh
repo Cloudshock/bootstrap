@@ -110,7 +110,7 @@ curl -sfL \
     -H "Authorization: Bearer $(jq -r '.credentials."app.terraform.io".token' ~/.terraform.d/credentials.tfrc.json)" \
     -H "Content-Type: application/vnd.api+json" \
     -X POST \
-    -d '{"data":{"type":"vars","attributes":{"key":"GOOGLE_CREDENTIALS","value":"'$(cat "$temp_directory/gcp-credentials.json" | tr -d '\n')'","description":"GCP Service Account used to manage GCP resources","category":"env","sensitive":true}}}' \
+    -d '{"data":{"type":"vars","attributes":{"key":"GOOGLE_CREDENTIALS","value":"'"$(cat "$temp_directory/gcp-credentials.json" | tr -d '\n' | sed -e 's~"~\\"~g' -e 's~\\n~\\\\n~g')"'","description":"GCP Service Account used to manage GCP resources","category":"env","sensitive":true}}}' \
     https://app.terraform.io/api/v2/workspaces/$workspace_id/vars > /dev/null
 
 # Remove the Service Account Key from the local filesystem now that it has been
@@ -123,4 +123,3 @@ rm -f "$temp_directory/gcp-credentials.json" > /dev/null || true
 cd $base_directory/../terraform/
 terraform init > /dev/null
 TFE_TOKEN="$(jq -r '.credentials."app.terraform.io".token' ~/.terraform.d/credentials.tfrc.json)" terraform import tfe_workspace.bootstrap "$workspace_id" > /dev/null
-terraform plan -target=tfe_workspace.bootstrap -detailed-exitcode > /dev/null

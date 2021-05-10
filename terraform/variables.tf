@@ -17,6 +17,6 @@ variable "terraform_cloud_oauth_token_id" {
 variable "gcp_project_suffix" {
   description = "The common suffix used for all GCP Project IDs."
   type        = string
-  default     = "900334"
+  default     = "455889"
 }
 

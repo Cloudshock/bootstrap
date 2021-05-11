@@ -40,8 +40,8 @@ Currently, the projects have been created with the following attributes, however
 
 | Project Name   | Project ID            | Purpose            |
 | -------------- | --------------------- | ------------------ |
-| CLOUDSHOCK     | cloudshock-455889     | restricted project |
-| CLOUDSHOCK-DEV | cloudshock-dev-455889 | developer project  |
+| CLOUDSHOCK     | cloudshock-445899     | restricted project |
+| CLOUDSHOCK-DEV | cloudshock-dev-445899 | developer project  |
 
 #### GCP Service Account
 

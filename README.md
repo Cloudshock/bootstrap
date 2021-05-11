@@ -9,7 +9,7 @@ This page is split into two sections: **Initial Setup** and **Regular Configurat
 
 ## Initial Setup
 
-This section describes the manual one-time setup that must be completed.  The sub-sections describe the resources created as part of this one-time setup.  The **Running Initial Setup** sub-section describes how to run the **initial-setup.sh** script.
+This section describes the manual one-time setup that must be completed.  The sub-sections describe the resources created as part of this one-time setup.  The **Running Initial Setup** sub-section describes how to run the **initial-setup.sh** script.  The following sub-sections are written as if starting from scratch, however as the project evolves and changes are made to the **initial-setup.sh**, a method to test this script without destroying the Terraform Cloud Organization and existing GCP Projects is provided.  See the **Testing Initial Setup** sub-section at the end of this section for details.
 
 The project requires accounts with the following systems:
 
@@ -23,8 +23,6 @@ Google Cloud Platform (GCP) is the platform used to run the project in the cloud
 This repository manages as much configuration of the GCP resources as possible, however some manual setup is required.  This consists of creating the GCP Projects and a Service Account used to create the remaining resources.
 
 As part of the creating the GCP Account, a Billing Account was setup.  This Billing Account will need to be provided as part of the script executed below to link the newly created GCP Projects to a Billing Account.
-
-
 
 #### GCP Projects
 
@@ -92,6 +90,17 @@ variable "terraform_cloud_oauth_token_id" {
     type        = string
 }
 ```
+
+### Testing Initial Setup
+
+The **initial-setup.sh** script can be run to verify its proper function, even when an active Terraform Cloud Organization and set of GCP Projects are present.  To do so, the environment variable **CLOUDSHOCK_TEST** must be set to a non-empty value.
+
+```sh
+export CLOUDSHOCK_TEST=1
+scripts/initial-setup.sh
+```
+
+The script will for the most part behave exactly the same as described above, except that at the end, the created Terraform Cloud Organization won't be imported into the Terraform State.  Instead, the script will pause and wait for some input from the operator.  This provides the operator the chance to inspect all of the created resources.  Once the input is provided, the script will proceed with destroying the Terraform Cloud Organization and the GCP Projects.
 
 ## Regular Configuration
 

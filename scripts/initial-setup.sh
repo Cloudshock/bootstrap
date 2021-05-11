@@ -127,10 +127,6 @@ curl -sfL \
     -d '{"data":{"type":"vars","attributes":{"key":"GOOGLE_CREDENTIALS","value":"'"$(cat "$temp_directory/gcp-credentials.json" | tr -d '\n' | sed -e 's~"~\\"~g' -e 's~\\n~\\\\n~g')"'","description":"GCP Service Account used to manage GCP resources","category":"env","sensitive":true}}}' \
     https://app.terraform.io/api/v2/workspaces/$workspace_id/vars
 
-# Remove the Service Account Key from the local filesystem now that it has been
-# used to create the Terraform Cloud Workspace Variable.
-rm -f "$temp_directory/gcp-credentials.json" || true
-
 # Only import the created Workspace into the Terraform State, if using the main cloudshock Terraform Cloud Organization.
 if [[ ${CLOUDSHOCK_TEST:+x} == x ]] ; then
     # Pause here to give the operator time to verify that everything was correctly setup.

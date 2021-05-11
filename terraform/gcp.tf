@@ -15,8 +15,8 @@ provider "google" {
 
 locals {
   gcp_project_ids = [
-    "cloudshock-${var.gcp_project_suffix}",
-    "cloudshock-dev-${var.gcp_project_suffix}",
+    "cloudshock-${var.project_suffix}",
+    "cloudshock-dev-${var.project_suffix}",
   ]
   gcp_services = [
     "compute.googleapis.com",
@@ -28,20 +28,20 @@ locals {
 resource "google_project_service" "cloudshock" {
   for_each = toset(local.gcp_services)
 
-  project = "cloudshock-${var.gcp_project_suffix}"
+  project = "cloudshock-${var.project_suffix}"
   service = each.value
 }
 
 resource "google_project_service" "cloudshock_dev" {
   for_each = toset(local.gcp_services)
 
-  project = "cloudshock-dev-${var.gcp_project_suffix}"
+  project = "cloudshock-dev-${var.project_suffix}"
   service = each.value
 }
 
 data "google_service_account" "tc_bootstrap" {
   account_id = "tc-bootstrap"
-  project    = "cloudshock-${var.gcp_project_suffix}"
+  project    = "cloudshock-${var.project_suffix}"
 }
 
 resource "google_project_iam_custom_role" "bootstrap" {

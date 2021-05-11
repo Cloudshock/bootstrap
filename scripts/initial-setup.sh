@@ -149,5 +149,5 @@ else
     # name.
     cd $base_directory/../terraform/
     terraform init
-    TFE_TOKEN="$(jq -r '.credentials."app.terraform.io".token' ~/.terraform.d/credentials.tfrc.json)" terraform import tfe_workspace.bootstrap "$workspace_id"
+    GOOGLE_CREDENTIALS="$(cat $temp_directory/gcp-credentials.json)" TFE_TOKEN="$(jq -r '.credentials."app.terraform.io".token' ~/.terraform.d/credentials.tfrc.json)" terraform import tfe_workspace.bootstrap "$workspace_id"
 fi

@@ -91,6 +91,14 @@ variable "terraform_cloud_oauth_token_id" {
 }
 ```
 
+Then the Terraform configuration must be manually applied for the first time (this will add the VCS integration that will cause Terraform Cloud to automatically run a plan when the bootstrap GitHub repository is updated).  Because Service APIs must be enabled first, use the following command to loop over those first:
+
+```sh
+terraform init
+for api in "cloudresourcemanager iam compute"; do terraform apply -target 'gcp_project_service.cloudshock["'$api'.googleapis.com"]' -target 'gcp_project_service.cloudshock_dev["'$api'.googleapis.com"]' ; done
+terraform apply
+```
+
 ### Testing Initial Setup
 
 The **initial-setup.sh** script can be run to verify its proper function, even when an active Terraform Cloud Organization and set of GCP Projects are present.  To do so, the environment variable **CLOUDSHOCK_TEST** must be set to a non-empty value.

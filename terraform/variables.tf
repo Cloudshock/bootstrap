@@ -10,7 +10,7 @@
 
 variable "terraform_cloud_oauth_token_id" {
     description = "The identifier of the OAuth Token created in the Workspace (starts with ot-)"
-    default     = "ot-gU64RbHvGesz6Etk"
+    default     = "ot-ixw9g92nEfhb5fJ8"
     type        = string
 }
 

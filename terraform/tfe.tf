@@ -33,3 +33,23 @@ resource "tfe_workspace" "bootstrap" {
     oauth_token_id = var.terraform_cloud_oauth_token_id
   }
 }
+
+resource "tfe_workspace" "gce_images" {
+  name               = "gce-images"
+  description        = "Configures resources required to build GCE Images"
+  organization       = "cloudshock"
+  allow_destroy_plan = false
+  terraform_version  = "0.15.1"
+  queue_all_runs     = false
+  working_directory  = "terraform/"
+
+  trigger_prefixes = [
+    "terraform/",
+  ]
+
+  vcs_repo {
+    identifier     = "cloudshock/gce-images"
+    branch         = "main"
+    oauth_token_id = var.terraform_cloud_oauth_token_id
+  }
+}

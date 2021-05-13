@@ -55,6 +55,13 @@ resource "google_project_iam_custom_role" "bootstrap" {
   description = "Custom Role used by Terraform Cloud for the bootstrap Workspace"
 
   permissions = [
+    "cloudkms.keyRings.create",
+    "cloudkms.keyRings.get",
+    "cloudkms.keyRings.getIamPolicy",
+    "cloudkms.keyRings.list",
+    "cloudkms.keyRings.setIamPolicy",
+    "cloudkms.locations.get",
+    "cloudkms.locations.list",
     "iam.roles.create",
     "iam.roles.delete",
     "iam.roles.get",

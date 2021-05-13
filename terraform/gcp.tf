@@ -60,8 +60,6 @@ resource "google_project_iam_custom_role" "bootstrap" {
     "cloudkms.keyRings.getIamPolicy",
     "cloudkms.keyRings.list",
     "cloudkms.keyRings.setIamPolicy",
-    "cloudkms.locations.get",
-    "cloudkms.locations.list",
     "iam.roles.create",
     "iam.roles.delete",
     "iam.roles.get",
@@ -81,4 +79,36 @@ resource "google_project_iam_binding" "tc_bootstrap" {
   members = [
     "serviceAccount:${data.google_service_account.tc_bootstrap.email}",
   ]
+}
+
+resource "google_kms_key_ring" "us" {
+  for_each = toset(local.gcp_project_ids)
+
+  name     = "unrestricted"
+  location = "us"
+  project  = each.key
+}
+
+resource "google_kms_key_ring" "europe" {
+  for_each = toset(local.gcp_project_ids)
+
+  name     = "unrestricted"
+  location = "eur4"
+  project  = each.key
+}
+
+resource "google_kms_key_ring" "australia" {
+  for_each = toset(local.gcp_project_ids)
+
+  name     = "unrestricted"
+  location = "australia-southeast-1"
+  project  = each.key
+}
+
+resource "google_kms_key_ring" "asia" {
+  for_each = toset(local.gcp_project_ids)
+
+  name     = "unrestricted"
+  location = "asia1"
+  project  = each.key
 }

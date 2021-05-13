@@ -66,6 +66,7 @@ resource "google_project_iam_custom_role" "bootstrap" {
     "iam.roles.list",
     "iam.roles.update",
     "iam.serviceAccounts.get",
+    "resourcemanager.projects.get",
     "resourcemanager.projects.getIamPolicy",
     "resourcemanager.projects.setIamPolicy",
     "serviceusage.services.disable",

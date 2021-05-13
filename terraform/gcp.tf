@@ -106,7 +106,7 @@ resource "google_kms_key_ring" "australia" {
   for_each = toset(local.gcp_project_ids)
 
   name     = "unrestricted"
-  location = "australia-southeast-1"
+  location = "australia-southeast1"
   project  = each.key
 }
 

@@ -52,9 +52,11 @@ done
 
 gcloud projects create cloudshock-$suffix --name CLOUDSHOCK --labels="creation-repository=bootstrap,persistent=true,created-by=$(whoami)"
 gcloud projects create cloudshock-dev-$suffix --name CLOUDSHOCK-DEV --labels="creation-repository=bootstrap,persistent=true,created-by=$(whoami)"
+gcloud projects create cloudshock-images-$suffix --name CLOUDSHOCK-IMAGES --labels="creation-repository=bootstrap,persistent=true,create-by=$(whoami)"
 
 gcloud beta billing projects link cloudshock-$suffix --billing-account="billingAccounts/$billing_account"
 gcloud beta billing projects link cloudshock-dev-$suffix --billing-account="billingAccounts/$billing_account"
+gcloud beta billing projects link cloudshock-images-$suffix --billing-account="billingAccounts/$billing_account"
 
 gcloud projects list --filter "cloudshock-"
 
@@ -64,6 +66,7 @@ gcloud iam service-accounts create tc-bootstrap --description "Service Account u
 # Give the single Service Account the Owner role in both projects
 gcloud projects add-iam-policy-binding cloudshock-$suffix --member=serviceAccount:tc-bootstrap@cloudshock-$suffix.iam.gserviceaccount.com --role=roles/owner
 gcloud projects add-iam-policy-binding cloudshock-dev-$suffix --member=serviceAccount:tc-bootstrap@cloudshock-$suffix.iam.gserviceaccount.com --role=roles/owner
+gcloud projects add-iam-policy-binding cloudshock-images-$suffix --member=serviceAccount:tc-bootstrap@cloudshock-$suffix.iam.gserviceaccount.com --role=roles/owner
 
 # Create a Key for the Service Account
 gcloud iam service-accounts keys create /data/gcp-credentials.json --iam-account=tc-bootstrap@cloudshock-$suffix.iam.gserviceaccount.com
@@ -141,6 +144,7 @@ if [[ ${CLOUDSHOCK_TEST:+x} == x ]] ; then
 
     gcloud projects delete cloudshock-dev-$suffix
     gcloud projects delete cloudshock-$suffix
+    gcloud projects delete cloudshock-images-$suffix
 
     exit 0
 else

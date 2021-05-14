@@ -17,26 +17,48 @@ locals {
   gcp_project_ids = [
     "cloudshock-${var.project_suffix}",
     "cloudshock-dev-${var.project_suffix}",
+    "cloudshock-images-${var.project_suffix}",
   ]
-  gcp_services = [
-    "compute.googleapis.com",
-    "iam.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
-    "cloudkms.googleapis.com",
-  ]
+  gcp_services = {
+    "cloudshock" = [
+      "compute.googleapis.com",
+      "iam.googleapis.com",
+      "cloudresourcemanager.googleapis.com",
+      "cloudkms.googleapis.com",
+    ]
+    "cloudshock-dev" = [
+      "compute.googleapis.com",
+      "iam.googleapis.com",
+      "cloudresourcemanager.googleapis.com",
+      "cloudkms.googleapis.com",
+    ]
+    "cloudshock-images" = [
+      "compute.googleapis.com",
+      "iam.googleapis.com",
+      "cloudresourcemanager.googleapis.com",
+      "cloudkms.googleapis.com",
+    ]
+  }
 }
 
 resource "google_project_service" "cloudshock" {
-  for_each = toset(local.gcp_services)
+  for_each = toset(local.gcp_services["cloudshock"])
 
   project = "cloudshock-${var.project_suffix}"
   service = each.value
 }
 
 resource "google_project_service" "cloudshock_dev" {
-  for_each = toset(local.gcp_services)
+  for_each = toset(local.gcp_services["cloudshock-dev"])
 
   project = "cloudshock-dev-${var.project_suffix}"
+  service = each.value
+}
+
+resource "google_project_service" "cloudshock_images" {
+  for_each = toset(local.gcp_services["cloudshock-images"])
+
+  project = "cloudshock-images-${var.project_suffix}"
   service = each.value
 }
 

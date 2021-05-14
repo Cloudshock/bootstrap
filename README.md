@@ -28,7 +28,7 @@ As part of the creating the GCP Account, a Billing Account was setup.  This Bill
 
 The initial setup script for GCP creates two GCP Projects, links a GCP Billing Account to them, creates a GCP Service Account (in one of the GCP Projects), grants this Service Account the Owner role in both GCP Projects, and finally generates a Key for the GCP Service Account.
 
-The two GCP Projects created are: a restricted project where the production and pre-production deployments exist, as well as released assets like Google Compute Engine (GCE) Images and Docker Images; the other project is used by developers to deploy their own deployments or partial deployments to experiment, validate, and test, prior to commiting their changes to the main branches of the code repositories.
+The three GCP Projects created are: a restricted project where the production and pre-production deployments exist, the next project is used by developers to deploy their own deployments or partial deployments to experiment, validate, and test, prior to commiting their changes to the main branches of the code repositories, and the final project is where GCE Images are built and hosted.
 
 GCP Projects are identified in two ways:
 * Name: a display name for the project
@@ -38,10 +38,11 @@ By convention, project names will use all uppercase letters and hyphens, and pro
 
 Currently, the projects have been created with the following attributes, however if reconstructing them in a disaster recovery scenario, it is possible that these project ID values are no longer available, in which case, a different six digit sequence should be used and the corresponding variable named **gcp_project_suffix** in the **terraform/variables.tf** file and the table below should be updated.
 
-| Project Name   | Project ID            | Purpose            |
-| -------------- | --------------------- | ------------------ |
-| CLOUDSHOCK     | cloudshock-445899     | restricted project |
-| CLOUDSHOCK-DEV | cloudshock-dev-445899 | developer project  |
+| Project Name      | Project ID               | Purpose            |
+| ----------------- | ------------------------ | ------------------ |
+| CLOUDSHOCK        | cloudshock-445899        | restricted project |
+| CLOUDSHOCK-DEV    | cloudshock-dev-445899    | developer project  |
+| CLOUDSHOCK-IMAGES | cloudshock-images-445899 | images project     |
 
 #### GCP Service Account
 
